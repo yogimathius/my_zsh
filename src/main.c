@@ -5,7 +5,7 @@
 #include <unistd.h>
 
 // void execute_command(char* command) {
-int system(const char* command);
+int execve(const char* filename, char* const argv[], char* const envp[]);
 
 void open_shell() {
   // char* args[] = {"/bin/sh", NULL};
@@ -25,17 +25,26 @@ void open_shell() {
       break;
     }
     input[strcspn(input, "\n")] = 0;
-    if (strlen(input) > 0) {
-      // add_history(input);
-      // printf("You entered: %s\n", input);
-    }
     if (strcmp(input, "exit") == 0 || strcmp(input, "quit") == 0) {
-      // printf("Exiting shell...\n");
       shell_exited = 1;
-      system("exit");
+    }
+    else if (strcmp(input, "sh") == 0) {
+      char* args[] = { "/bin/sh", NULL };
+      execve("/bin/sh", args, NULL);
+      perror("execve");
+    }
+    else if (strncmp(input, "ls", 2) == 0) {
+      char* args[] = { "/bin/ls", NULL };
+      execve("/bin/ls", args, NULL);
+      perror("execve");
+    }
+    else if (strncmp(input, "cat", 3) == 0) {
+      char* args[] = { "/bin/cat", NULL };
+      execve("/bin/cat", args, NULL);
+      perror("execve");
     }
     else {
-      // execute_command(input);
+      printf("Command not found: %s\n", input);
     }
     free(input);
   }
