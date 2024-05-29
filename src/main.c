@@ -5,6 +5,7 @@
 #include <unistd.h>
 
 // void execute_command(char* command) {
+int system(const char* command);
 
 void open_shell() {
   // char* args[] = {"/bin/sh", NULL};
@@ -31,6 +32,7 @@ void open_shell() {
     if (strcmp(input, "exit") == 0 || strcmp(input, "quit") == 0) {
       // printf("Exiting shell...\n");
       shell_exited = 1;
+      system("exit");
     }
     else {
       // execute_command(input);
