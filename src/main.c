@@ -4,6 +4,8 @@
 #include <string.h>
 #include <unistd.h>
 
+// void execute_command(char* command) {
+
 void open_shell() {
   // char* args[] = {"/bin/sh", NULL};
   // execv(args[0], args);
@@ -20,7 +22,7 @@ void open_shell() {
       // add_history(input);
       printf("You entered: %s\n", input);
     }
-    if (strcmp(input, "exit") == 0) {
+    if (strcmp(input, "exit") == 0 || strcmp(input, "quit") == 0) {
       printf("Exiting shell...\n");
       shell_exited = 1;
       exit(0);
