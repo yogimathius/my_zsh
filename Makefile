@@ -5,7 +5,7 @@ CFLAGS = -Wall -Wextra -Werror  -fsanitize=address -g3
 SRCDIR = $(CURDIR)/src
 INCDIR = $(CURDIR)/inc
 BUILDDIR = $(CURDIR)/build
-TARGET = $(BUILDDIR)/zsh
+TARGET = my_zsh
 
 # Gather all source files recursively
 SOURCES = $(wildcard $(SRCDIR)/*.c)
