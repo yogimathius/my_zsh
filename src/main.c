@@ -171,7 +171,9 @@ void open_shell() {
       }
       else if (pid > 0) {  // Parent process
         int status;
-        waitpid(pid, &status, 0);  // Wait for child process to finish
+        waitpid(pid, &status, 0);
+        printf("$ "); // Print shell prompt after command execution
+        fflush(stdout);  // Wait for child process to finish
       }
       else {
         perror("fork");
