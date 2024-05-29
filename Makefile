@@ -22,3 +22,5 @@ $(BUILDDIR)/%.o: $(SRCDIR)/%.c
 
 clean:
 		rm -f $(OBJECTS) $(TARGET)
+
+fclean: clean
