@@ -77,7 +77,7 @@ int is_builtin(const char* command) {
   return 0; // Command is not a built-in
 }
 
-char* is_executable(const char* command) {
+char* find_executable(const char* command) {
   char* path = getenv("PATH");
   if (path == NULL) {
     return NULL;
@@ -125,7 +125,7 @@ void open_shell() {
       exit(1);
     }
 
-    printf("$ ");
+    fprintf(stdout, "$ ");
     if (fgets(input, 1024, stdin) == NULL) {
       free(input);
       break;
@@ -152,8 +152,8 @@ void open_shell() {
     else {
       pid_t pid = fork();
 
-      if (pid == 0) {  // Child process
-        char* exec = is_executable(args[0]);
+      if (pid == 0) {
+        char* exec = find_executable(args[0]);
         if (exec != NULL) {
           execve(exec, args, NULL);
         }
@@ -166,14 +166,12 @@ void open_shell() {
         else {
           printf("Command not found: %s\n", args[0]);
         }
-        perror("execve");  // execve failed
+        perror("execve");
         exit(1);
       }
       else if (pid > 0) {  // Parent process
         int status;
-        waitpid(pid, &status, 0);
-        printf("$ "); // Print shell prompt after command execution
-        fflush(stdout);  // Wait for child process to finish
+        waitpid(pid, &status, 0);  // Wait for child process to finish
       }
       else {
         perror("fork");
