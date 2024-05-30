@@ -125,7 +125,7 @@ void open_shell(char** env) {
       exit(1);
     }
 
-    fprintf(stdout, "$ ");
+    fputs("$ ", stdout);
     if (fgets(input, 1024, stdin) == NULL) {
       free(input);
       break;
