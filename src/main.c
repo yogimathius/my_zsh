@@ -119,13 +119,14 @@ void open_shell(char** env) {
   int shell_exited = 0;
 
   while (!shell_exited) {
+    fputs("$ ", stdout);
+
     char* input = (char*)malloc(1024);
     if (input == NULL) {
       fprintf(stderr, "Memory allocation failed\n");
       exit(1);
     }
 
-    fputs("$ ", stdout);
     if (fgets(input, 1024, stdin) == NULL) {
       free(input);
       break;
@@ -171,7 +172,9 @@ void open_shell(char** env) {
       }
       else if (pid > 0) {  // Parent process
         int status;
-        waitpid(pid, &status, 0);  // Wait for child process to finish
+        do {
+          waitpid(pid, &status, WUNTRACED);
+        } while (!WIFEXITED(status) && !WIFSIGNALED(status));
       }
       else {
         perror("fork");
