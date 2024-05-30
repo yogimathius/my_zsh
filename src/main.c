@@ -113,7 +113,7 @@ char* find_executable(const char* command) {
 // void execute_command(char* command) {
 int execve(const char* filename, char* const argv[], char* const envp[]);
 
-void open_shell() {
+void open_shell(char** env) {
   // char* args[] = {"/bin/sh", NULL};
   // execv(args[0], args);
   int shell_exited = 0;
@@ -155,7 +155,7 @@ void open_shell() {
       if (pid == 0) {
         char* exec = find_executable(args[0]);
         if (exec != NULL) {
-          execve(exec, args, NULL);
+          execve(exec, args, env);
         }
 
         else if (is_builtin(args[0])) {
@@ -181,8 +181,9 @@ void open_shell() {
   }
 }
 
-int main() {
-  /* code */
-  open_shell();
+int main(int ac, char** av, char** env) {
+  UNUSED(ac);
+  UNUSED(av);
+  open_shell(env);
   return 0;
 }
