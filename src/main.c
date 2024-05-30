@@ -119,7 +119,7 @@ void open_shell(char** env) {
   int shell_exited = 0;
 
   while (!shell_exited) {
-    write(STDOUT_FILENO, "$ ", strlen("$ "));
+    write(STDOUT_FILENO, "", strlen(""));
 
     char* input = (char*)malloc(1024);
     if (input == NULL) {
