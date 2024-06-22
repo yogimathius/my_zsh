@@ -8,63 +8,14 @@
 
 // List of built-in commands
 char* builtins[] = {
-    "alias",
-    "bg",
-    "bind",
-    "break",
-    "builtin",
     "cd",
-    "command",
-    "compgen",
-    "complete",
-    "compopt",
-    "continue",
-    "declare",
-    "dirs",
-    "disown",
     "echo",
-    "enable",
-    "eval",
-    "exec",
     "exit",
-    "export",
-    "false",
-    "fc",
-    "fg",
-    "getopts",
-    "hash",
-    "help",
-    "history",
-    "jobs",
-    "kill",
-    "let",
-    "local",
-    "logout",
-    "mapfile",
-    "popd",
-    "printf",
-    "pushd",
+    "env",
+    "setenv",
+    "unsetenv",
     "pwd",
-    "read",
-    "readarray",
-    "readonly",
-    "return",
-    "set",
-    "shift",
-    "shopt",
-    "source",
-    "suspend",
-    "test",
-    "times",
-    "trap",
-    "true",
-    "type",
-    "typeset",
-    "ulimit",
-    "umask",
-    "unalias",
-    "unset",
-    "wait",
+    "which",
 };
 
 int is_builtin(const char* command) {
@@ -113,7 +64,52 @@ char* find_executable(const char* command) {
 // void execute_command(char* command) {
 int execve(const char* filename, char* const argv[], char* const envp[]);
 
+void execute_command(char* command) {
+  char* args[64];
+  char* token = strtok(command, " ");
+  int i = 0;
+  while (token != NULL && i < 63) {
+    args[i++] = token;
+    token = strtok(NULL, " ");
+  }
+  args[i] = NULL;
+
+  if (args[0] == NULL) {
+    return;
+  }
+
+  pid_t pid = fork();
+
+  if (pid == 0) {
+    char* exec = find_executable(args[0]);
+    if (exec != NULL) {
+      execve(exec, args, NULL);
+    }
+
+    else if (is_builtin(args[0])) {
+      char path[1024];
+      snprintf(path, 1024, "/bin/%s", args[0]);
+      execve(path, args, NULL);
+    }
+    else {
+      printf("Command not found: %s\n", args[0]);
+    }
+    perror("execve");
+    exit(1);
+  }
+  else if (pid > 0) {  // Parent process
+    int status;
+    do {
+      waitpid(pid, &status, WUNTRACED);
+    } while (!WIFEXITED(status) && !WIFSIGNALED(status));
+  }
+  else {
+    perror("fork");
+  }
+}
+
 void open_shell(char** env) {
+  UNUSED(env);
   // char* args[] = {"/bin/sh", NULL};
   // execv(args[0], args);
   int shell_exited = 0;
@@ -133,53 +129,7 @@ void open_shell(char** env) {
     }
     input[strcspn(input, "\n")] = 0;
 
-    char* args[64];
-    char* token = strtok(input, " ");
-    int i = 0;
-    while (token != NULL && i < 63) {
-      args[i++] = token;
-      token = strtok(NULL, " ");
-    }
-    args[i] = NULL;
-
-    if (args[0] == NULL) {
-      free(input);
-      continue;
-    }
-
-    if (strcmp(input, "exit") == 0 || strcmp(input, "quit") == 0) {
-      shell_exited = 1;
-    }
-    else {
-      pid_t pid = fork();
-
-      if (pid == 0) {
-        char* exec = find_executable(args[0]);
-        if (exec != NULL) {
-          execve(exec, args, env);
-        }
-
-        else if (is_builtin(args[0])) {
-          char path[1024];
-          snprintf(path, 1024, "/bin/%s", args[0]);
-          execve(path, args, NULL);
-        }
-        else {
-          printf("Command not found: %s\n", args[0]);
-        }
-        perror("execve");
-        exit(1);
-      }
-      else if (pid > 0) {  // Parent process
-        int status;
-        do {
-          waitpid(pid, &status, WUNTRACED);
-        } while (!WIFEXITED(status) && !WIFSIGNALED(status));
-      }
-      else {
-        perror("fork");
-      }
-    }
+    execute_command(input);
     free(input);
   }
 }
