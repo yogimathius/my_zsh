@@ -16,16 +16,18 @@ char* builtins[] = {
     "unsetenv",
     "pwd",
     "which",
+    "ls",
+    "quit"
 };
 
 int is_builtin(const char* command) {
   size_t num_builtins = sizeof(builtins) / sizeof(builtins[0]);
   for (size_t i = 0; i < num_builtins; i++) {
     if (strcmp(command, builtins[i]) == 0) {
-      return 1; // Command is a built-in
+      return 1;
     }
   }
-  return 0; // Command is not a built-in
+  return 0;
 }
 
 char* find_executable(const char* command) {
@@ -72,16 +74,25 @@ void get_input(char* input) {
   input[strcspn(input, "\n")] = 0;
 }
 
-void execute_command(char* command) {
-  char* args[64];
-  char* token = strtok(command, " ");
+char** split_input(char* input) {
+  char** args = (char**)malloc(64 * sizeof(char*));
+  if (args == NULL) {
+    perror("malloc");
+    return NULL;
+  }
+
+  char* token = strtok(input, " ");
   int i = 0;
-  while (token != NULL && i < 63) {
-    args[i++] = token;
+  while (token != NULL) {
+    args[i] = token;
+    i++;
     token = strtok(NULL, " ");
   }
   args[i] = NULL;
+  return args;
+}
 
+void execute_command(char** args) {
   if (args[0] == NULL) {
     return;
   }
@@ -131,8 +142,8 @@ void open_shell(char** env) {
     }
 
     get_input(input);
-
-    execute_command(input);
+    char** args = split_input(input);
+    execute_command(args);
     free(input);
   }
 }
