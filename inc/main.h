@@ -13,4 +13,8 @@
 void get_input(char* input);
 char** split_input(char* input);
 
+int is_builtin(const char* command);
+
+void run_command(char** args);
+
 #endif // MAIN_H
