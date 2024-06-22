@@ -17,4 +17,6 @@ int is_builtin(const char* command);
 
 void run_command(char** args);
 
+void new_process(char** args);
+
 #endif // MAIN_H
