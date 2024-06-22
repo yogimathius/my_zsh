@@ -1,10 +1,4 @@
 #include "../inc/main.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/wait.h>
 
 // List of built-in commands
 char* builtins[] = {
@@ -17,7 +11,6 @@ char* builtins[] = {
     "pwd",
     "which",
     "ls",
-    "quit"
 };
 
 int is_builtin(const char* command) {
@@ -65,32 +58,6 @@ char* find_executable(const char* command) {
 
 // void execute_command(char* command) {
 int execve(const char* filename, char* const argv[], char* const envp[]);
-
-void get_input(char* input) {
-  write(STDOUT_FILENO, "", strlen(""));
-  if (fgets(input, 1024, stdin) == NULL) {
-    return;
-  }
-  input[strcspn(input, "\n")] = 0;
-}
-
-char** split_input(char* input) {
-  char** args = (char**)malloc(64 * sizeof(char*));
-  if (args == NULL) {
-    perror("malloc");
-    return NULL;
-  }
-
-  char* token = strtok(input, " ");
-  int i = 0;
-  while (token != NULL) {
-    args[i] = token;
-    i++;
-    token = strtok(NULL, " ");
-  }
-  args[i] = NULL;
-  return args;
-}
 
 void execute_command(char** args) {
   if (args[0] == NULL) {
