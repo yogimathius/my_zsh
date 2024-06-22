@@ -64,6 +64,14 @@ char* find_executable(const char* command) {
 // void execute_command(char* command) {
 int execve(const char* filename, char* const argv[], char* const envp[]);
 
+void get_input(char* input) {
+  write(STDOUT_FILENO, "", strlen(""));
+  if (fgets(input, 1024, stdin) == NULL) {
+    return;
+  }
+  input[strcspn(input, "\n")] = 0;
+}
+
 void execute_command(char* command) {
   char* args[64];
   char* token = strtok(command, " ");
@@ -115,19 +123,14 @@ void open_shell(char** env) {
   int shell_exited = 0;
 
   while (!shell_exited) {
-    write(STDOUT_FILENO, "", strlen(""));
-
     char* input = (char*)malloc(1024);
+
     if (input == NULL) {
-      fprintf(stderr, "Memory allocation failed\n");
-      exit(1);
+      perror("malloc");
+      return;
     }
 
-    if (fgets(input, 1024, stdin) == NULL) {
-      free(input);
-      break;
-    }
-    input[strcspn(input, "\n")] = 0;
+    get_input(input);
 
     execute_command(input);
     free(input);
