@@ -6,7 +6,7 @@ void open_shell(char** env) {
   // execv(args[0], args);
   int shell_exited = 0;
 
-  while (!shell_exited) {
+  do {
     char* input = (char*)malloc(1024);
 
     if (input == NULL) {
@@ -16,7 +16,7 @@ void open_shell(char** env) {
 
     get_input(input);
     char** args = split_input(input);
-    new_process(args);
+    shell_exited = execute_args(args);
     free(input);
-  }
+  } while (!shell_exited);
 }

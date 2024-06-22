@@ -15,9 +15,9 @@ char** split_input(char* input);
 
 int is_builtin(const char* command);
 
-void run_command(char** args);
+int run_command(char** args);
 
-void new_process(char** args);
+int execute_args(char** args);
 
 void open_shell(char** env);
 

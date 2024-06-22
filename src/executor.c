@@ -35,20 +35,45 @@ char* find_executable(const char* command) {
 
 int execve(const char* filename, char* const argv[], char* const envp[]);
 
-void run_command(char** args) {
+int run_command(char** args) {
   char* exec = find_executable(args[0]);
   if (exec != NULL) {
     execve(exec, args, NULL);
   }
 
-  else if (is_builtin(args[0])) {
+  else {
+    printf("Command not found: %s\n", args[0]);
+    return 1;
+  }
+  perror("execve");
+  return 1;
+}
+
+int execute_args(char** args) {
+  if (args[0] == NULL) {
+    return 1;
+  }
+
+  if (is_builtin(args[0])) {
     char path[1024];
     snprintf(path, 1024, "/bin/%s", args[0]);
     execve(path, args, NULL);
   }
-  else {
-    printf("Command not found: %s\n", args[0]);
+
+  pid_t pid = fork();
+
+  if (pid == 0) {
+    return run_command(args);
   }
-  perror("execve");
-  exit(1);
+  else if (pid > 0) {  // Parent process
+    int status;
+    do {
+      waitpid(pid, &status, WUNTRACED);
+    } while (!WIFEXITED(status) && !WIFSIGNALED(status));
+  }
+  else {
+    perror("fork");
+    return 1;
+  }
+  return 0;
 }
