@@ -19,4 +19,6 @@ void run_command(char** args);
 
 void new_process(char** args);
 
+void open_shell(char** env);
+
 #endif // MAIN_H
