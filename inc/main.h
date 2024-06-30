@@ -8,6 +8,7 @@
 #include <sys/wait.h>
 #include <dirent.h>
 #include "builtins.h"
+#include "zsh.h"
 
 #ifndef MAIN_H
 #define MAIN_H
