@@ -41,7 +41,7 @@ int custom_exit(char** args) {
 int custom_env(char** args, char** env) {
   UNUSED(args);
   while (*env) {
-    printf("%s\n", *env);
+    write(1, *env, strlen(*env));
     env++;
   }
   return 0;
