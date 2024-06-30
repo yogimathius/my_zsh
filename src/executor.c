@@ -56,7 +56,7 @@ int run_command(char** args) {
   }
 
   else {
-    printf("Command not found: %s\n", args[0]);
+    write(STDERR_FILENO, "Command not found\n", 18);
     return 1;
   }
   perror("execve");
