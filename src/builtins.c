@@ -32,8 +32,26 @@ int custom_cd(char** args) {
     }
   }
   return 0;
-
 }
+
+int custom_ls(char** args) {
+  UNUSED(args);
+  char* path = ".";
+  DIR* dir = opendir(path);
+  if (dir == NULL) {
+    perror("ls");
+    return 1;
+  }
+
+  struct dirent* entry;
+  while ((entry = readdir(dir)) != NULL) {
+    printf("%s\n", entry->d_name);
+  }
+
+  closedir(dir);
+  return 1;
+}
+
 int custom_exit(char** args) {
   UNUSED(args);
   return 1;
@@ -163,6 +181,9 @@ int run_builtin(char** args, char** env) {
   }
   else if (strcmp(args[0], "setenv") == 0) {
     return custom_setenv(args, env);
+  }
+  else if (strcmp(args[0], "ls") == 0) {
+    return custom_ls(args);
   }
   else if (strcmp(args[0], "unsetenv") == 0) {
     return custom_unsetenv(args);
