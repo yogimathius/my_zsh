@@ -23,6 +23,6 @@ int run_command(char** args);
 
 int execute_args(char** args, char** env);
 
-void open_shell(char** env);
+void open_shell(int ac, char** av, char** env);
 
 #endif // MAIN_H

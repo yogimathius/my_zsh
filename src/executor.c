@@ -52,7 +52,6 @@ int run_command(char** args) {
 
   char* exec = find_executable(args[0]);
   if (exec != NULL) {
-    printf("Running command: %s\n", exec);
     return  execve(exec, args, NULL);
   }
 
