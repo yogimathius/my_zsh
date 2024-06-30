@@ -3,7 +3,7 @@
 char* builtins[] = {
     "cd",
     "echo",
-    "exit",
+    "quit",
     "env",
     "setenv",
     "unsetenv",
@@ -137,7 +137,7 @@ int run_builtin(char** args, char** env) {
   if (strcmp(args[0], "cd") == 0) {
     return custom_cd(args);
   }
-  else if (strcmp(args[0], "exit") == 0) {
+  else if (strcmp(args[0], "quit") == 0) {
     return custom_exit(args);
   }
   else if (strcmp(args[0], "env") == 0) {
