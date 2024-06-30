@@ -31,7 +31,7 @@ int custom_cd(char** args) {
       perror("cd");
     }
   }
-  return 1;
+  return 0;
 
 }
 int custom_exit(char** args) {
@@ -45,7 +45,7 @@ int custom_env(char** args, char** env) {
     printf("%s\n", *env);
     env++;
   }
-  return 1;
+  return 0;
 }
 
 int custom_echo(char** args) {
@@ -63,7 +63,7 @@ int custom_ls(char** args) {
   DIR* dir = opendir(path);
   if (dir == NULL) {
     perror("ls");
-    return 1;
+    return 0;
   }
 
   struct dirent* entry;
@@ -72,7 +72,7 @@ int custom_ls(char** args) {
   }
 
   closedir(dir);
-  return 1;
+  return 0;
 
 }
 
@@ -84,7 +84,7 @@ int custom_pwd(char** args) {
     return 1;
   }
   printf("%s\n", path);
-  return 1;
+  return 0;
 
 
 }
@@ -98,7 +98,7 @@ int custom_setenv(char** args) {
       perror("setenv");
     }
   }
-  return 1;
+  return 0;
 
 
 }
@@ -112,7 +112,7 @@ int custom_unsetenv(char** args) {
       perror("unsetenv");
     }
   }
-  return 1;
+  return 0;
 }
 
 int custom_which(char** args) {
@@ -130,7 +130,7 @@ int custom_which(char** args) {
     printf("Command not found: %s\n", args[1]);
     return 1;
   }
-  return 1;
+  return 0;
 }
 
 int run_builtin(char** args, char** env) {
