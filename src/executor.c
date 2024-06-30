@@ -1,6 +1,17 @@
 #include "../inc/main.h"
+#include <signal.h>
+
+void sigsegv_handler(int sig) {
+  printf("segmentation fault");
+  exit(1); // Exit the program with an error code
+}
 
 char* find_executable(const char* command) {
+  if (access(command, X_OK) == 0) {
+    // Command is executable, return a copy of the command
+    return strdup(command);
+  }
+
   char* path = getenv("PATH");
   if (path == NULL) {
     return NULL;
@@ -36,9 +47,12 @@ char* find_executable(const char* command) {
 int execve(const char* filename, char* const argv[], char* const envp[]);
 
 int run_command(char** args) {
+  signal(SIGSEGV, sigsegv_handler);
+
   char* exec = find_executable(args[0]);
   if (exec != NULL) {
-    execve(exec, args, NULL);
+    printf("Running command: %s\n", exec);
+    return  execve(exec, args, NULL);
   }
 
   else {
@@ -66,15 +80,20 @@ int execute_args(char** args, char** env) {
   if (pid == 0) {
     return run_command(args);
   }
-  else if (pid > 0) {  // Parent process
-    int status;
-    do {
-      waitpid(pid, &status, WUNTRACED);
-    } while (!WIFEXITED(status) && !WIFSIGNALED(status));
+  else if (pid < 0) {   // Error forking
+    perror("fork");
+    return EXIT_FAILURE;
   }
   else {
-    perror("fork");
-    return 1;
+    int status; // Parent process
+    waitpid(pid, &status, WUNTRACED);
+
+    if (WIFEXITED(status)) { return WEXITSTATUS(status); }  // Child exited normally
+    else if (WIFSIGNALED(status)) {     // Child terminated by a signal
+      int term_sig = WTERMSIG(status);
+      sigsegv_handler(term_sig);
+      return EXIT_FAILURE;
+    }
   }
   return 0;
 }
