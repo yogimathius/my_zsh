@@ -1,6 +1,6 @@
 #include "../inc/main.h"
 
-char* builtins[] = {
+const char* builtins[] = {
     "cd",
     "echo",
     "quit",
@@ -58,7 +58,7 @@ int custom_echo(char** args) {
 
 int custom_ls(char** args) {
   UNUSED(args);
-  char* path = ".";
+  const char* path = ".";
   DIR* dir = opendir(path);
   if (dir == NULL) {
     perror("ls");
