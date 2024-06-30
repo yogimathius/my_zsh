@@ -49,7 +49,7 @@ int run_command(char** args) {
   return 1;
 }
 
-int execute_args(char** args) {
+int execute_args(char** args, char** env) {
   if (args[0] == NULL) {
     return 1;
   }
@@ -57,7 +57,8 @@ int execute_args(char** args) {
   if (is_builtin(args[0])) {
     char path[1024];
     snprintf(path, 1024, "/bin/%s", args[0]);
-    execve(path, args, NULL);
+    // execve(path, args, NULL);
+    return run_builtin(args, env);
   }
 
   pid_t pid = fork();

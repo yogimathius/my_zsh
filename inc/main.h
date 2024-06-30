@@ -6,6 +6,8 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <dirent.h>
+#include "builtins.h"
 
 #ifndef MAIN_H
 #define MAIN_H
@@ -15,9 +17,10 @@ char** split_input(char* input);
 
 int is_builtin(const char* command);
 
+char* find_executable(const char* command);
 int run_command(char** args);
 
-int execute_args(char** args);
+int execute_args(char** args, char** env);
 
 void open_shell(char** env);
 
