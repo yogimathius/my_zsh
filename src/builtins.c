@@ -9,6 +9,7 @@ const char* builtins[] = {
     "unsetenv",
     "pwd",
     "which",
+    "ls",
 };
 
 int is_builtin(const char* command) {
