@@ -2,6 +2,7 @@
 #include <signal.h>
 
 void sigsegv_handler(int sig) {
+  UNUSED(sig);
   printf("segmentation fault");
   exit(1); // Exit the program with an error code
 }
