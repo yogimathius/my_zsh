@@ -48,7 +48,6 @@ char* find_executable(const char* command) {
 int execve(const char* filename, char* const argv[], char* const envp[]);
 
 int run_command(char** args) {
-  signal(SIGSEGV, sigsegv_handler);
 
   char* exec = find_executable(args[0]);
   if (exec != NULL) {
