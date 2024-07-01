@@ -48,7 +48,11 @@ char* find_executable(const char* command) {
 int execve(const char* filename, char* const argv[], char* const envp[]);
 
 int run_command(char** args) {
-
+  if (strcmp(args[0], "ls") == 0) {
+    char* args[] = { "/bin/ls", "-1", NULL };
+    setenv("LC_ALL", "C", 1);
+    return execve(args[0], args, NULL);
+  }
   char* exec = find_executable(args[0]);
   if (exec != NULL) {
     return  execve(exec, args, NULL);
