@@ -23,14 +23,35 @@ int is_builtin(const char* command) {
 }
 
 int custom_cd(char** args) {
+  static char prev[1024] = "";
+  char current[1024];
   if (args[1] == NULL) {
     fprintf(stderr, "cd: expected argument to \"cd\"\n");
   }
   else {
-    if (chdir(args[1]) != 0) {
+
+    if (getcwd(current, 1024) == NULL) {
       perror("cd");
+      return 1;
+    }
+
+    if (strcmp(args[1], "-") == 0) {
+      if (prev[0] == '\0') {
+        fprintf(stderr, "cd: no previous directory\n");
+        return 1;
+      }
+
+      if (chdir(prev) != 0) {
+        perror("cd");
+      }
+    }
+    else {
+      if (chdir(args[1]) != 0) {
+        perror("cd");
+      }
     }
   }
+  strcpy(prev, current);
   return 0;
 }
 
