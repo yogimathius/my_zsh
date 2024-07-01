@@ -1,3 +1,4 @@
+#include <unistd.h>
 #include "../inc/main.h"
 
 const char* builtins[] = {
@@ -9,7 +10,6 @@ const char* builtins[] = {
     "unsetenv",
     "pwd",
     "which",
-    "ls",
 };
 
 int is_builtin(const char* command) {
@@ -73,7 +73,7 @@ int custom_echo(char** args, char** env) {
       if (strncmp(env[i], args[1] + 1, strlen(args[1]) - 1) == 0) {
         strtok(env[i], "=");
         char* value = strtok(NULL, "=");
-        printf("%s\n", value);
+        write(STDOUT_FILENO, value, strlen(value));
         return 0;
       }
       i++;
@@ -107,18 +107,15 @@ int custom_setenv(char** args, char** env) {
   if (env_var == NULL) {
     fprintf(stderr, "setenv: expected argument in the form of VAR=VAL\n");
   }
-  char* arg = value + 2;
-  // slice off #{ and closing } that is in arg currently
-  arg[strlen(arg) - 1] = '\0';
 
   int i = 0;
   // combine the env_var and arg
-  char* new_env = (char*)malloc(strlen(arg) + strlen(env_var) + 2);
+  char* new_env = (char*)malloc(strlen(value) + strlen(env_var) + 2);
   if (new_env == NULL) {
     perror("malloc");
     return 1;
   }
-  snprintf(new_env, strlen(env_var) + strlen(arg) + 2, "%s=%s", env_var, arg);
+  snprintf(new_env, strlen(env_var) + strlen(value) + 2, "%s=%s", env_var, value);
   while (env[i] != NULL) {
     if (strncmp(*env, env_var, strlen(env_var)) == 0) {
       *env = strdup(new_env);
@@ -182,9 +179,9 @@ int run_builtin(char** args, char** env) {
   else if (strcmp(args[0], "setenv") == 0) {
     return custom_setenv(args, env);
   }
-  else if (strcmp(args[0], "ls") == 0) {
-    return custom_ls(args);
-  }
+  //   else if (strcmp(args[0], "ls") == 0) {
+  //     return custom_ls(args);
+  //   }
   else if (strcmp(args[0], "unsetenv") == 0) {
     return custom_unsetenv(args);
   }
