@@ -7,7 +7,7 @@ int custom_env(char** args, char** env);
 int custom_echo(char** args, char** env);
 int custom_pwd(char** args);
 int custom_setenv(char** args, char** env);
-int custom_unsetenv(char** args);
+int custom_unsetenv(char** args, char** env);
 int custom_which(char** args);
 
 int run_builtin(char** args, char** env);

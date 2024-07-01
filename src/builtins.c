@@ -130,13 +130,18 @@ int custom_setenv(char** args, char** env) {
 
 }
 
-int custom_unsetenv(char** args) {
+int custom_unsetenv(char** args, char** env) {
   if (args[1] == NULL) {
     fprintf(stderr, "unsetenv: expected argument\n");
   }
   else {
-    if (unsetenv(args[1]) != 0) {
-      perror("unsetenv");
+    int i = 0;
+    while (env != NULL && env[i] != NULL) {
+      if (strncmp(env[i], args[1], strlen(args[1])) == 0) {
+        env[i] = NULL;
+        return 0;
+      }
+      i++;
     }
   }
   return 0;
@@ -183,7 +188,7 @@ int run_builtin(char** args, char** env) {
   //     return custom_ls(args);
   //   }
   else if (strcmp(args[0], "unsetenv") == 0) {
-    return custom_unsetenv(args);
+    return custom_unsetenv(args, env);
   }
   else if (strcmp(args[0], "which") == 0) {
     return custom_which(args);
