@@ -2,18 +2,26 @@
 ***
 
 ## Task
-TODO - What is the problem? And where is the challenge?
+There are programs out there that everyone uses, and it’s easy to put their developers on a pedestal. Although developing large software projects isn’t easy, many times the basic idea of that software is quite simple. Implementing it yourself is a fun way to show that you have what it takes to be a real programmer.
 
 ## Description
-TODO - How have you solved the problem?
+Write your own Shell, is it possible?
+Let's do it! :-)
 
 ## Installation
-TODO - How to install your project? npm install? make? make re?
+`make`
 
 ## Usage
-TODO - How does it work?
+
 ```
-./my_project argument1 argument2
+./my_zsh
+```
+
+```
+ls
+pwd
+cd ..
+etc
 ```
 
 ### The Core Team
