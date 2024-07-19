@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -g3 -fsanitize=address --pedantic-errors
+CFLAGS = -Wall -Wextra -Werror -g3 --pedantic-errors
 
 # Using CURDIR to set the SRCDIR
 SRCDIR = $(CURDIR)/src

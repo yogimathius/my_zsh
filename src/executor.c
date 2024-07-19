@@ -4,7 +4,7 @@
 
 void sigsegv_handler(int sig) {
   UNUSED(sig);
-  printf("segmentation fault");
+  perror("segmentation fault");
   exit(1); // Exit the program with an error code
 }
 
@@ -60,7 +60,7 @@ int execve(const char* filename, char* const argv[], char* const envp[]);
 int run_command(char** args, char** env) {
   char* exec = find_executable(args[0], env);
   if (exec != NULL) {
-    return  execve(exec, args, NULL);
+    return  execve(exec, args, env);
   }
 
   else {
@@ -99,7 +99,6 @@ int execute_args(char** args, char** env) {
     if (WIFEXITED(status)) { return WEXITSTATUS(status); }  // Child exited normally
     else if (WIFSIGNALED(status)) {     // Child terminated by a signal
       int term_sig = WTERMSIG(status);
-      printf("seg fault");
       sigsegv_handler(term_sig);
       return EXIT_FAILURE;
     }
