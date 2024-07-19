@@ -16,6 +16,10 @@ char** create_env(char** env) {
     new_env[i] = strdup(env[i]);
     if (new_env[i] == NULL) {
       perror("strdup");
+      for (int j = 0; j < i; j++) {
+        free(new_env[j]);
+      }
+      free(new_env);
       return NULL;
     }
   }
@@ -23,3 +27,12 @@ char** create_env(char** env) {
   new_env[env_size] = NULL;
   return new_env;
 }
+
+void free_env(char** env) {
+  if (env == NULL) return;
+  for (int i = 0; env[i] != NULL; i++) {
+    free(env[i]);
+  }
+  free(env);
+}
+

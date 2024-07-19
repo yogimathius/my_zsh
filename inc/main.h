@@ -22,7 +22,7 @@ char* find_executable(const char* command, char** env);
 int run_command(char** args, char** env);
 
 int execute_args(char** args, char** env);
-
+void free_args(char** args);
 void open_shell(int ac, char** av, char** env);
 
 #endif // MAIN_H

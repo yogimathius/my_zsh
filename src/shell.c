@@ -30,6 +30,7 @@ void open_shell(int ac, char** av, char** env) {
     get_input(input);
     char** args = split_input(input);
     shell_exited = execute_args(args, env);
+    free_args(args);
     free(input);
   } while (!shell_exited);
 }
