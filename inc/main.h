@@ -18,8 +18,8 @@ char** split_input(char* input);
 
 int is_builtin(const char* command);
 
-char* find_executable(const char* command);
-int run_command(char** args);
+char* find_executable(const char* command, char** env);
+int run_command(char** args, char** env);
 
 int execute_args(char** args, char** env);
 

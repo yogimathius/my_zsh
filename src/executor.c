@@ -1,5 +1,6 @@
 #include "../inc/main.h"
 #include <signal.h>
+#include <stdio.h>
 
 void sigsegv_handler(int sig) {
   UNUSED(sig);
@@ -7,13 +8,22 @@ void sigsegv_handler(int sig) {
   exit(1); // Exit the program with an error code
 }
 
-char* find_executable(const char* command) {
+char* get_env(char** env, const char* key) {
+  for (size_t i = 0; env[i] != NULL; i++) {
+    if (strncmp(env[i], key, strlen(key)) == 0) {
+      return env[i] + strlen(key) + 1;
+    }
+  }
+  return NULL;
+}
+
+char* find_executable(const char* command, char** env) {
   if (access(command, X_OK) == 0) {
     // Command is executable, return a copy of the command
     return strdup(command);
   }
 
-  char* path = getenv("PATH");
+  char* path = get_env(env, "PATH");
   if (path == NULL) {
     return NULL;
   }
@@ -47,8 +57,8 @@ char* find_executable(const char* command) {
 
 int execve(const char* filename, char* const argv[], char* const envp[]);
 
-int run_command(char** args) {
-  char* exec = find_executable(args[0]);
+int run_command(char** args, char** env) {
+  char* exec = find_executable(args[0], env);
   if (exec != NULL) {
     return  execve(exec, args, NULL);
   }
@@ -76,7 +86,7 @@ int execute_args(char** args, char** env) {
   pid_t pid = fork();
 
   if (pid == 0) {
-    return run_command(args);
+    return run_command(args, env);
   }
   else if (pid < 0) {   // Error forking
     perror("fork");
@@ -89,6 +99,7 @@ int execute_args(char** args, char** env) {
     if (WIFEXITED(status)) { return WEXITSTATUS(status); }  // Child exited normally
     else if (WIFSIGNALED(status)) {     // Child terminated by a signal
       int term_sig = WTERMSIG(status);
+      printf("seg fault");
       sigsegv_handler(term_sig);
       return EXIT_FAILURE;
     }
