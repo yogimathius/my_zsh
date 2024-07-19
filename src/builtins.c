@@ -168,13 +168,13 @@ int custom_unsetenv(char** args, char** env) {
   return 0;
 }
 
-int custom_which(char** args) {
+int custom_which(char** args, char** env) {
   if (args[1] == NULL) {
     fprintf(stderr, "which: expected argument\n");
     return 1;
   }
 
-  char* exec = find_executable(args[1]);
+  char* exec = find_executable(args[1], env);
   if (exec != NULL) {
     printf("%s\n", exec);
     free(exec);
@@ -212,7 +212,7 @@ int run_builtin(char** args, char** env) {
     return custom_unsetenv(args, env);
   }
   else if (strcmp(args[0], "which") == 0) {
-    return custom_which(args);
+    return custom_which(args, env);
   }
   return 1;
 }
